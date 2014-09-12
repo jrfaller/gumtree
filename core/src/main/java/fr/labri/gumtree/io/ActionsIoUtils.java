@@ -9,6 +9,8 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import com.google.gson.stream.JsonWriter;
+
 import fr.labri.gumtree.actions.model.Action;
 import fr.labri.gumtree.actions.model.Delete;
 import fr.labri.gumtree.actions.model.Insert;
@@ -100,7 +102,7 @@ public final class ActionsIoUtils {
 			w.writeEndElement();
 		}
 	}
-
+	
 	private static void writeTreePos(XMLStreamWriter w, boolean isBefore, Tree tree) throws XMLStreamException {
 		if (isBefore) w.writeEmptyElement("before"); else w.writeEmptyElement("after");
 		if (tree.getLcPosStart() != null) {
@@ -117,6 +119,34 @@ public final class ActionsIoUtils {
 		w.writeAttribute("begin_col", Integer.toString(pos[1]));
 		w.writeAttribute("end_line", Integer.toString(pos[0]));
 		w.writeAttribute("end_col", Integer.toString(pos[1]));
+	}
+	
+	public static void toJson(List<Action> actions, MappingStore mappings, String file) {
+		try {
+			FileWriter f = new FileWriter(file);
+			f.append(toJson(actions, mappings));
+			f.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static String toJson(List<Action> actions, MappingStore mappings) {
+		StringWriter s = new StringWriter();
+		JsonWriter writer = new JsonWriter(s);
+        writer.setIndent("\t");
+		String result = null;
+		try {
+			writer.beginArray();
+			ActionsJsonIoUtils.writeJsonActions(actions, mappings, writer);
+			writer.endArray();
+			writer.close();
+			result = s.toString();
+			s.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 }
