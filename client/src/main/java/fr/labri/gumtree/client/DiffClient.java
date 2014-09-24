@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
+import fr.labri.gumtree.client.ui.json.JsonDiff;
 import fr.labri.gumtree.client.ui.swing.SwingDiff;
 import fr.labri.gumtree.client.ui.web.WebDiff;
 import fr.labri.gumtree.client.ui.xml.AnnotatedXmlDiff;
@@ -23,6 +24,7 @@ public abstract class DiffClient {
 			DiffClient client;
 			if ("swing".equals(diffOptions.getOutput())) client = new SwingDiff(diffOptions);
 			else if ("xml".equals(diffOptions.getOutput())) client = new XmlDiff(diffOptions);
+			else if ("json".equals(diffOptions.getOutput())) client = new JsonDiff(diffOptions);
 			else if ("asrc".equals(diffOptions.getOutput())) client = new AnnotatedXmlDiff(diffOptions, true);
 			else if ("adst".equals(diffOptions.getOutput())) client = new AnnotatedXmlDiff(diffOptions, false);
 			else client = new WebDiff(diffOptions);
